@@ -1,0 +1,72 @@
+package controller;
+
+import model.Group;
+
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import data.DataManager;
+
+public class GroupController extends MyObservable implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Set<Group> groups;
+
+    public GroupController() {
+        Set<Group> loaded = DataManager.loadGroups();
+        groups = (loaded != null ) ? loaded : new HashSet<>(); 
+    }
+
+    // Add Group
+    public void addGroup(Group group) {
+        groups.add(group);
+        DataManager.saveGroups(groups);
+        notifyObservers();
+    }
+
+    // Remove Group
+    public void removeGroup(Group group) {
+        groups.remove(group);
+        DataManager.saveGroups(groups);
+        notifyObservers();
+    }
+
+    // Get all Groups
+    public Set<Group> getAllGroups() {
+        return new HashSet<>(groups);
+    }
+
+    // Find Group By Name
+    
+    public Group findGroupByName(String name) {
+        for (Group group : groups) {
+            if (group.getName().equalsIgnoreCase(name)) {
+                return group;
+            }
+        }
+        return null;
+    }
+
+    // Search groups by name prefix
+    public ArrayList<Group> searchGroupByNamePrefix(String prefix) {
+        ArrayList<Group> result = new ArrayList<>();
+        for (Group group : groups) {
+            if (group.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
+                result.add(group);
+            }
+        }
+        return result;
+    }
+
+    // Sort groups by name
+    public ArrayList<Group> getGroupsSortedByName() {
+        ArrayList<Group> sorted = new ArrayList<>(groups);
+        sorted.sort((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
+        return sorted;
+    }
+}
+

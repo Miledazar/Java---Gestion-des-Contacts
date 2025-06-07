@@ -1,0 +1,227 @@
+package view;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import controller.ContactController;
+import controller.GroupController;
+import model.Contact;
+import model.Group;
+
+public class UpdateContactWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTable table;
+	private Contact contact;
+	private ContactController contactController;
+	private GroupController groupController;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Contact contact = new Contact("John", "Doe", "Paris");
+					ContactController contactController = new ContactController();
+					GroupController groupController = new GroupController();
+					UpdateContactWindow frame = new UpdateContactWindow(contact, contactController, groupController);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public UpdateContactWindow(Contact contact, ContactController contactController, GroupController groupController) {
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 450, 504);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setBounds(184, 11, 201, 24);
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblNewContact = new JLabel("Update Contact");
+		lblNewContact.setForeground(Color.RED);
+		lblNewContact.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		lblNewContact.setBounds(10, 39, 148, 24);
+		contentPane.add(lblNewContact);
+		
+		JLabel lblNewLabel = new JLabel("First Name");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(184, 59, 67, 14);
+		contentPane.add(lblNewLabel);
+		
+		textField = new JTextField(contact.getFirstName());
+		textField.setBounds(250, 56, 174, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblLastName = new JLabel("Last Name");
+		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblLastName.setBounds(184, 84, 67, 14);
+		contentPane.add(lblLastName);
+		
+		textField_1 = new JTextField(contact.getLastName());
+		textField_1.setColumns(10);
+		textField_1.setBounds(250, 81, 174, 20);
+		contentPane.add(textField_1);
+		
+		textField_2 = new JTextField(contact.getCity());
+		textField_2.setColumns(10);
+		textField_2.setBounds(215, 105, 209, 20);
+		contentPane.add(textField_2);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("City");
+		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel_2_1.setBounds(184, 109, 67, 14);
+		contentPane.add(lblNewLabel_2_1);
+		
+		
+		  
+		JLabel lblAdd = new JLabel("Add the contact to Groups");
+		lblAdd.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblAdd.setBounds(173, 319, 166, 14);
+		contentPane.add(lblAdd);
+		
+		DefaultTableModel tableModel = new DefaultTableModel(new Object[]{"Phone Numbers"}, 0);
+	    for (String phone : contact.getPhoneNumbers()) {
+	        tableModel.addRow(new Object[]{phone});
+	    }
+	    table = new JTable(tableModel);
+	    JScrollPane phoneScrollPane = new JScrollPane(table);
+	    phoneScrollPane.setBounds(124, 136, 300, 125);
+	    contentPane.add(phoneScrollPane);
+		
+	    JButton btnAddPhone = new JButton("Add Phone");
+	    btnAddPhone.setBounds(131, 272, 120, 23);
+	    btnAddPhone.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	            tableModel.addRow(new Object[]{""});
+	        }
+	    });
+	    contentPane.add(btnAddPhone);
+
+
+	    JButton btnRemovePhone = new JButton("Remove Selected");
+	    btnRemovePhone.setBounds(284, 272, 140, 23);
+	    btnRemovePhone.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	            int selectedRow = table.getSelectedRow();
+	            if (selectedRow != -1) {
+	                tableModel.removeRow(selectedRow);
+	            }
+	        }
+	    });
+	    contentPane.add(btnRemovePhone);
+
+		
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(188, 344, 135, 76);
+		contentPane.add(scrollPane);
+		
+		JPanel groupPanel = new JPanel();
+		scrollPane.setColumnHeaderView(groupPanel);
+		groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
+		
+		Set<Group> allGroups = groupController.getAllGroups(); 
+		Set<Group> contactGroups = contact.getGroup();
+		
+		for (Group group : allGroups) {
+		    JCheckBox groupCheckBox = new JCheckBox(group.getName());
+		    groupCheckBox.setName(group.getName()); 
+		    if (contactGroups.contains(group)) {
+		        groupCheckBox.setSelected(true);
+		    }
+		    groupPanel.add(groupCheckBox);
+		}
+		JButton btnNewButton = new JButton("Save");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String firstName = textField.getText().trim();
+		        String lastName = textField_1.getText().trim();
+		        String city = textField_2.getText().trim();
+
+		       
+		        contact.setFirstName(firstName);
+		        contact.setLastName(lastName);
+		        contact.setCity(city);
+
+		        
+		        Set<String> updatedPhones = new HashSet<>();
+		        for (int i = 0; i < table.getRowCount(); i++) {
+		            String phone = (String) table.getValueAt(i, 0);
+		            if (phone != null && !phone.trim().isEmpty()) {
+		                updatedPhones.add(phone.trim());
+		            }
+		        }
+		        
+		        Contact updatedContact = new Contact(firstName, lastName, city);
+		        updatedContact.setPhoneNumbers(updatedPhones);
+		        
+		        for (Component comp : groupPanel.getComponents()) {
+		            if (comp instanceof JCheckBox checkBox && checkBox.isSelected()) {
+		                String groupName = checkBox.getText();
+		                Group group = groupController.findGroupByName(groupName);
+		                
+		                if (group != null) {
+		                    updatedContact.addGroup(group); // ✅ Use model API
+		                }
+		            }
+		        }
+		        
+		        contactController.updateContact(contact, updatedContact);
+
+		        
+		        dispose();
+			}
+		});
+		btnNewButton.setBounds(152, 431, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBounds(284, 431, 89, 23);
+		contentPane.add(btnCancel);
+	}
+	}
+
+

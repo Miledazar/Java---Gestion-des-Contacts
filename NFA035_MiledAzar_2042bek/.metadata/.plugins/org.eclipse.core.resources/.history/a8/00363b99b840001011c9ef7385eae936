@@ -1,0 +1,110 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+
+import controller.GroupController;
+import model.Group;
+
+import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.Font;
+import java.util.Set;
+
+
+import javax.swing.JScrollPane;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JList;
+
+public class GroupsWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private GroupController groupController;
+	private JList<String> groupList;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					GroupController groupController = new GroupController();
+					GroupsWindow frame = new GroupsWindow(groupController);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	private void loadGroupsIntoTable() {
+		Set<Group> groups = groupController.getAllGroups(); 
+		
+		DefaultListModel<String> model = new DefaultListModel<>();
+		for (Group group : groups) {
+			model.addElement(group.getName());
+		}
+		groupList.setModel(model);
+	}
+	
+
+	/**
+	 * Create the frame.
+	 */
+	public GroupsWindow(GroupController groupController) {
+		this.groupController = groupController;
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 450, 322);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Groups");
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		lblNewLabel.setForeground(Color.RED);
+		lblNewLabel.setBounds(10, 47, 68, 21);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel_1.setBounds(137, 11, 197, 26);
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblListOf = new JLabel("List of groups");
+		lblListOf.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblListOf.setBounds(236, 52, 98, 14);
+		contentPane.add(lblListOf);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(207, 90, 159, 144);
+		contentPane.add(scrollPane);
+		
+		groupList = new JList<>();
+		scrollPane.setRowHeaderView(groupList);
+		loadGroupsIntoTable();
+		
+		JButton btnNewButton = new JButton("Update Group");
+		btnNewButton.setBounds(160, 253, 125, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setBounds(296, 253, 107, 23);
+		contentPane.add(btnDelete);
+		
+		JButton btnDelete_1 = new JButton("Add New Group");
+		btnDelete_1.setBounds(10, 90, 140, 23);
+		contentPane.add(btnDelete_1);
+	}
+}

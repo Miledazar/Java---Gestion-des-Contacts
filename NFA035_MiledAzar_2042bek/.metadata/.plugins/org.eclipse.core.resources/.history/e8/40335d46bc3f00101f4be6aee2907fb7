@@ -1,0 +1,176 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import controller.ContactController;
+import model.Contact;
+
+import java.awt.Color;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JTextField;
+import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JScrollPane;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.awt.event.ActionEvent;
+
+public class ContactsWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField txtSearch;
+//	private ContactController contactController;
+	private JList<Contact> contactsList;
+    private DefaultListModel<Contact> listModel;
+    
+	private void updateContactList(Collection<Contact> contacts) {
+	    listModel.clear();
+	    for (Contact c : contacts) {
+	        listModel.addElement(c);
+	    }
+	}
+
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ContactController contactController = new ContactController();  
+					ContactsWindow frame = new ContactsWindow(contactController);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public ContactsWindow(ContactController controller) {
+		this.contactController= controller;
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 456, 373);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Contacts");
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		lblNewLabel.setForeground(Color.RED);
+		lblNewLabel.setBounds(25, 55, 81, 14);
+		contentPane.add(lblNewLabel);
+		
+		JButton btnNewButton = new JButton("Sort by First name");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TreeSet<Contact> sorted = controller.getContactsSortedByFirstName();
+				updateContactList(sorted);
+				
+			}
+		});
+		btnNewButton.setBounds(25, 88, 137, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Sort by Last name");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<Contact> sorted = controller.getContactsSortedByLastName();
+				updateContactList(sorted);
+			}
+		});
+		btnNewButton_1.setBounds(25, 132, 137, 23);
+		contentPane.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("Sort by City");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<Contact> sorted = controller.getContactsSortedByCity();
+				updateContactList(sorted);
+			}
+		});
+		btnNewButton_2.setBounds(25, 180, 113, 23);
+		contentPane.add(btnNewButton_2);
+		
+		JButton btnNewButton_2_1 = new JButton("Add new contact");
+		btnNewButton_2_1.setBounds(25, 227, 137, 23);
+		contentPane.add(btnNewButton_2_1);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel_1.setBounds(168, 11, 197, 26);
+		contentPane.add(lblNewLabel_1);
+		
+		JList list = new JList();
+		list.setBounds(317, 167, 0, 0);
+		contentPane.add(list);
+		
+		txtSearch = new JTextField();
+		txtSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<Contact> sorted = controller.searchFirstNameByPrefix(e.getActionCommand());
+				updateContactList(sorted);
+			}
+		});
+		txtSearch.setBounds(226, 54, 198, 23);
+		contentPane.add(txtSearch);
+		txtSearch.setColumns(10);
+		
+		JLabel lblSearch = new JLabel("Search");
+		lblSearch.setForeground(Color.BLACK);
+		lblSearch.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblSearch.setBounds(178, 57, 50, 14);
+		contentPane.add(lblSearch);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setToolTipText("asfa");
+		scrollPane.setBounds(227, 90, 197, 185);
+		contentPane.add(scrollPane);
+		
+//		JList list_1 = new JList();
+//		scrollPane.setViewportView(list_1);
+//		list_1.setModel(new AbstractListModel() {
+//			String[] values = new String[] {"", "ROmps blompsROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blompsROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blompsROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blompsROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blompsROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blompsROmps blomps", "ROmps blomps", "ROmps blomps", "ROmps blomps"};
+//			public int getSize() {
+//				return values.length;
+//			}
+//			public Object getElementAt(int index) {
+//				return values[index];
+//			}
+//		});
+		listModel = new DefaultListModel<>();
+		contactsList = new JList<>(listModel);
+		scrollPane.setViewportView(contactsList);
+		
+		JButton btnNewButton_3 = new JButton("View");
+		btnNewButton_3.setBounds(204, 303, 72, 23);
+		contentPane.add(btnNewButton_3);
+		
+		JButton btnNewButton_3_1 = new JButton("Update");
+		btnNewButton_3_1.setBounds(278, 303, 81, 23);
+		contentPane.add(btnNewButton_3_1);
+		
+		JButton btnNewButton_3_2 = new JButton("Delete");
+		btnNewButton_3_2.setBounds(362, 303, 72, 23);
+		contentPane.add(btnNewButton_3_2);
+		
+		
+	}
+}

@@ -1,0 +1,110 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import controller.ContactController;
+import controller.GroupController;
+
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+
+public class NewGroupWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTable table;
+	private ContactController contactController;
+	private GroupController groupController;
+	private GroupsWindow groupsWindow;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ContactController contactController = new ContactController(); 
+					GroupController groupController = new GroupController();
+					GroupsWindow groupsWindow = new GroupsWindow(groupController);
+					
+					NewGroupWindow frame = new NewGroupWindow(groupController, contactController, groupsWindow);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public NewGroupWindow( GroupController groupController,ContactController contactController, GroupsWindow contactsWindow) {
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 450, 374);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblGroups = new JLabel("Add New Group");
+		lblGroups.setForeground(Color.RED);
+		lblGroups.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		lblGroups.setBounds(10, 39, 133, 24);
+		contentPane.add(lblGroups);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel_1.setBounds(133, 11, 197, 26);
+		contentPane.add(lblNewLabel_1);
+		
+		textField = new JTextField();
+		textField.setColumns(10);
+		textField.setBounds(250, 58, 174, 20);
+		contentPane.add(textField);
+		
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(250, 89, 174, 20);
+		contentPane.add(textField_1);
+		
+		JLabel lblGroupName = new JLabel("Group name");
+		lblGroupName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblGroupName.setBounds(173, 61, 78, 14);
+		contentPane.add(lblGroupName);
+		
+		JLabel lblDescription = new JLabel("Description");
+		lblDescription.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblDescription.setBounds(173, 92, 67, 14);
+		contentPane.add(lblDescription);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(178, 132, 246, 170);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		JButton btnNewButton = new JButton("Save Group");
+		btnNewButton.setBounds(201, 312, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBounds(312, 313, 89, 23);
+		contentPane.add(btnCancel);
+	}
+}

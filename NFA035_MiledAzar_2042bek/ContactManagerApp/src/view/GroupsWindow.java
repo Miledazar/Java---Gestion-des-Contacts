@@ -1,0 +1,178 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import controller.ContactController;
+import controller.GroupController;
+import controller.MyObserver;
+import model.Contact;
+import model.Group;
+
+import javax.swing.JLabel;
+import java.awt.Color;
+import java.awt.Font;
+import java.util.Collection;
+import java.util.Set;
+
+
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class GroupsWindow extends JFrame implements MyObserver {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private GroupController groupController;
+	private ContactController contactController;
+	private JList<Group> groupList;
+	private DefaultListModel<Group> listModel;
+	
+
+	/**
+	 * Launch the application.
+	 */
+	
+	@Override
+	public void update() {
+	    listModel.clear();
+	    Collection<Group> groups = groupController.getAllGroups();
+	    for (Group c : groups) {
+	        listModel.addElement(c);
+	    }
+	}
+    
+	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					GroupController groupController = new GroupController();
+					ContactController contactController = new ContactController();
+					GroupsWindow frame = new GroupsWindow(groupController, contactController);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	
+
+	/**
+	 * Create the frame.
+	 */
+	public GroupsWindow(GroupController groupController, ContactController contactController) {
+		this.groupController = groupController;
+		this.contactController = contactController;
+		
+		if (!groupController.hasObserver(this)) {
+			groupController.addObserver(this);
+		}
+		
+		if (!contactController.hasObserver(this)) {
+			contactController.addObserver(this);
+		}
+		
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 450, 321);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Groups");
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		lblNewLabel.setForeground(Color.RED);
+		lblNewLabel.setBounds(10, 47, 68, 21);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel_1.setBounds(137, 11, 197, 26);
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblListOf = new JLabel("List of groups");
+		lblListOf.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblListOf.setBounds(236, 52, 98, 14);
+		contentPane.add(lblListOf);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(207, 90, 159, 144);
+		contentPane.add(scrollPane);
+		
+		listModel = new DefaultListModel<>();
+		groupList = new JList<>(listModel);
+		groupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane.setViewportView(groupList);
+		
+		// Load Groups / Update
+		update();
+		
+		JButton btnNewButton = new JButton("Update Group");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Group selectedGroup = groupList.getSelectedValue();
+			    if (selectedGroup != null) {
+			        UpdateGroupWindow updateWindow = new UpdateGroupWindow(
+			            selectedGroup,  groupController, contactController, GroupsWindow.this);
+			        updateWindow.setVisible(true);
+			    } else {
+			        JOptionPane.showMessageDialog(GroupsWindow.this, "Please select a group to update.");
+			    }
+			}
+			
+		});
+		btnNewButton.setBounds(160, 253, 125, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Group selectedGroup = groupList.getSelectedValue();
+			    if (selectedGroup == null) {
+			    	JOptionPane.showMessageDialog(GroupsWindow.this, "Please select a contact to delete.");
+			    }else {
+			    
+				 int confirm = JOptionPane.showConfirmDialog(
+					        GroupsWindow.this,
+					        "Are you sure you want to delete this group ?",
+					        "Confirm Cancel",
+					        JOptionPane.YES_NO_OPTION
+					    );
+
+					    if (confirm == JOptionPane.YES_OPTION) {
+					        
+					       groupController.removeGroup(selectedGroup);;
+					    }
+			    }
+			}
+		});
+		btnDelete.setBounds(296, 253, 107, 23);
+		contentPane.add(btnDelete);
+		
+		JButton btnDelete_1 = new JButton("Add New Group");
+		btnDelete_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				NewGroupWindow newGroupWindow = new NewGroupWindow( groupController,contactController, GroupsWindow.this);
+		        newGroupWindow.setVisible(true);
+			}
+		});
+		btnDelete_1.setBounds(10, 90, 140, 23);
+		contentPane.add(btnDelete_1);
+	}
+}

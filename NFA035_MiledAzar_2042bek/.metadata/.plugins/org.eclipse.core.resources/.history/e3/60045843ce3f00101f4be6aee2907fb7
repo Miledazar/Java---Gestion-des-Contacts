@@ -1,0 +1,171 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JCheckBox;
+import javax.swing.BoxLayout;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import controller.ContactController;
+
+import java.awt.Component;
+
+public class NewContactWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTable table;
+	private ContactController controller;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ContactController contactController = new ContactController(); 
+					NewContactWindow frame = new NewContactWindow(contactController);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public NewContactWindow(ContactController controller) {
+		this.controller = controller;
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 463);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setBounds(184, 11, 201, 24);
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblNewContact = new JLabel("New Contact");
+		lblNewContact.setForeground(Color.RED);
+		lblNewContact.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		lblNewContact.setBounds(10, 39, 127, 24);
+		contentPane.add(lblNewContact);
+		
+		JLabel lblNewLabel = new JLabel("First Name");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(184, 59, 67, 14);
+		contentPane.add(lblNewLabel);
+		
+		textField = new JTextField();
+		textField.setBounds(250, 56, 174, 20);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblLastName = new JLabel("Last Name");
+		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblLastName.setBounds(184, 84, 67, 14);
+		contentPane.add(lblLastName);
+		
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(250, 81, 174, 20);
+		contentPane.add(textField_1);
+		
+		textField_2 = new JTextField();
+		textField_2.setColumns(10);
+		textField_2.setBounds(215, 105, 209, 20);
+		contentPane.add(textField_2);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("City");
+		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel_2_1.setBounds(184, 109, 67, 14);
+		contentPane.add(lblNewLabel_2_1);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null},
+				{null},
+				{null},
+				{null},
+				{null},
+			},
+			new String[] {
+				"New column"
+			}
+		));
+		table.setBounds(184, 161, 240, 101);
+		contentPane.add(table);
+		
+		JLabel lblPhoneNumbers = new JLabel("Phone numbers");
+		lblPhoneNumbers.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblPhoneNumbers.setBounds(237, 136, 148, 14);
+		contentPane.add(lblPhoneNumbers);
+		
+		JLabel lblAdd = new JLabel("Add the contact to Groups");
+		lblAdd.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblAdd.setBounds(219, 276, 166, 14);
+		contentPane.add(lblAdd);
+		
+		JButton btnNewButton = new JButton("Save");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnNewButton.setBounds(198, 390, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBounds(314, 390, 89, 23);
+		contentPane.add(btnCancel);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(229, 303, 135, 76);
+		contentPane.add(scrollPane);
+		
+		JPanel panel = new JPanel();
+		scrollPane.setViewportView(panel);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		
+		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("New check box");
+		panel.add(chckbxNewCheckBox_1);
+		
+		JCheckBox chckbxNewCheckBox = new JCheckBox("New check box");
+		panel.add(chckbxNewCheckBox);
+		
+		JCheckBox chckbxNewCheckBox_2 = new JCheckBox("New check box");
+		panel.add(chckbxNewCheckBox_2);
+		
+		JCheckBox chckbxNewCheckBox_3 = new JCheckBox("New check box");
+		panel.add(chckbxNewCheckBox_3);
+		
+		JCheckBox chckbxNewCheckBox_2_1 = new JCheckBox("New check box");
+		panel.add(chckbxNewCheckBox_2_1);
+		panel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{chckbxNewCheckBox_1, chckbxNewCheckBox, chckbxNewCheckBox_2, chckbxNewCheckBox_3, chckbxNewCheckBox_2_1}));
+	}
+}

@@ -1,0 +1,69 @@
+package data;
+
+import model.Contact;
+import model.Group;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
+
+public class DataManager {
+	
+	public static final String CONTACTS_FILE = "contacts.dat";
+	public static final String GROUPS_FILE = "groups.dat";
+	
+	// Save Contacts
+	
+	public static void saveContacts(TreeSet<Contact> contacts) {
+		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CONTACTS_FILE))){
+			oos.writeObject(contacts);
+		} catch (IOException e) {
+			System.out.println("Error saving contacts: "+ e.getMessage());
+		}
+	}
+	
+	// Save Groups
+
+	public static void saveGroups(Set<Group> groups) {
+		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GROUPS_FILE))){
+			oos.writeObject(groups);
+		} catch (IOException e) {
+			System.out.println("Error saving contacts: "+ e.getMessage());
+		}
+			
+	}
+	
+	// Load Contacts 
+	
+	@SuppressWarnings("unchecked")
+	public static TreeSet<Contact> loadContacts(){
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CONTACTS_FILE))){
+			return (TreeSet<Contact>) ois.readObject();	 
+		}catch (IOException | ClassNotFoundException e) {
+            System.out.println("No existing contact file found or failed to load: " + e.getMessage());
+            return new TreeSet<>();
+        }
+	  }
+	
+	
+
+
+	// Load Groups
+
+	@SuppressWarnings("unchecked")
+	public static Set<Group> loadGroups(){
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GROUPS_FILE))){
+			return(HashSet<Group>) ois.readObject();
+		}catch (IOException | ClassNotFoundException e) {
+            System.out.println("No existing contact file found or failed to load: " + e.getMessage());
+            return new HashSet<>();
+        }
+  }
+	}
+	

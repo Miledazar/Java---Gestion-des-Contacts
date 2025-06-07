@@ -1,0 +1,85 @@
+package controller;
+
+	import model.Contact;
+	
+	import java.io.Serializable;
+	import java.util.ArrayList;
+//	import java.util.HashSet;
+//	import java.util.Set;
+	import java.util.TreeSet;
+
+import data.DataManager;
+
+	public class ContactController extends MyObservable implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+		
+		private TreeSet<Contact> contacts;
+		
+		public ContactController() {
+			 TreeSet<Contact> loaded = DataManager.loadContacts();
+			    contacts = (loaded != null) ? loaded : new TreeSet<>();
+		}
+		
+		// Add Contact
+		
+		public void addContact(Contact contact) {
+			contacts.add(contact);
+		}
+		
+		// Remove Contact
+		
+		public void removeContact(Contact contact) {
+			contacts.remove(contact);
+		}
+		
+		// Get All Contacts
+		
+		public TreeSet<Contact> getAllContacts(){
+			return new TreeSet<>(contacts);
+		}
+		
+		// Search by first name prefix
+		
+		public ArrayList<Contact> searchFirstNameByPrefix(String prefix){
+
+			ArrayList<Contact> byFirstName = new ArrayList<>();
+			
+			for(Contact contact : contacts) {
+				if(contact.getFirstName().toLowerCase().startsWith(prefix.toLowerCase())) {
+					byFirstName.add(contact);
+				}
+				
+			}
+			
+			return byFirstName;
+		}
+		
+		// Sort by first name 
+//		public ArrayList<Contact> getContactsSortedByFirstName() {
+//			ArrayList<Contact> sorted = new ArrayList<>(contacts);
+//			sorted.sort((c1, c2) -> c1.getFirstName().compareToIgnoreCase(c2.getFirstName()));
+//		    return sorted;
+//		}
+		
+		public TreeSet<Contact> getContactsSortedByFirstName() {
+			TreeSet<Contact> sorted = new TreeSet<>(contacts);
+		    return sorted;
+		}
+		
+		// Sort by last name
+		public ArrayList<Contact> getContactsSortedByLastName() {
+		    ArrayList<Contact> sorted = new ArrayList<>(contacts);
+		    sorted.sort((c1, c2) -> c1.getLastName().compareToIgnoreCase(c2.getLastName()));
+		    return sorted;
+		}
+
+		// Sort by city
+		public ArrayList<Contact> getContactsSortedByCity() {
+		    ArrayList<Contact> sorted = new ArrayList<>(contacts);
+		    sorted.sort((c1, c2) -> c1.getCity().compareToIgnoreCase(c2.getCity()));
+		    return sorted;
+		}
+	}
+
+

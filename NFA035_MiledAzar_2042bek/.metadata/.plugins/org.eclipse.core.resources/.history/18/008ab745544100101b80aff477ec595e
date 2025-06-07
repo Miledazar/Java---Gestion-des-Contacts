@@ -1,0 +1,92 @@
+package view;
+
+import view.ContactsWindow;
+import view.GroupsWindow;
+
+//import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import controller.ContactController;
+import controller.GroupController;
+
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+//import javax.swing.JTextField;
+import java.awt.Color;
+import javax.swing.JLabel;
+import java.awt.Font;
+
+
+public class MainWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private ContactController contactController;
+	private GroupController groupController;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ContactController contactController = new ContactController();
+					GroupController groupController = new GroupController();
+					
+					MainWindow frame = new MainWindow(contactController, groupController);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public MainWindow(ContactController contactController, GroupController groupController) {
+		this.contactController = contactController;
+		this.groupController = groupController;
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		
+		JButton btnNewButton = new JButton("Contacts");
+		btnNewButton.setBounds(10, 89, 89, 23);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ContactsWindow contactsWindow = new ContactsWindow(contactController, groupController);
+		        contactsWindow.setVisible(true);
+			}
+		});
+		contentPane.setLayout(null);
+		contentPane.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Groups");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 GroupsWindow groupsWindow = new GroupsWindow(groupController, contactController);
+			        groupsWindow.setVisible(true);
+			}
+		});
+		btnNewButton_1.setBounds(10, 146, 89, 23);
+		contentPane.add(btnNewButton_1);
+		
+		JLabel lblNewLabel = new JLabel("Gestion des contacts");
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel.setForeground(Color.BLUE);
+		lblNewLabel.setBounds(133, 11, 198, 25);
+		contentPane.add(lblNewLabel);
+	}
+}

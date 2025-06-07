@@ -1,0 +1,223 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
+import java.util.Set;
+import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import javax.swing.JCheckBox;
+import javax.swing.BoxLayout;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import controller.ContactController;
+import controller.GroupController;
+import model.Contact;
+import model.Group;
+
+import java.awt.Component;
+
+public class NewContactWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField firstNameField;
+	private JTextField lastNameField;
+	private JTextField cityNameField;
+	private ContactController contactController;
+	private GroupController groupController;
+	private ContactsWindow contactsWindow;
+	private JTextField phoneNumberField;
+	private JPanel groupPanel;
+	
+	
+
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ContactController contactController = new ContactController(); 
+					GroupController groupController = new GroupController();
+					ContactsWindow contactsWindow = new ContactsWindow(contactController, groupController);
+					
+					NewContactWindow frame = new NewContactWindow(contactController, groupController, contactsWindow);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	
+	private void populateGroupCheckboxes() {
+        groupPanel.removeAll();
+        Set<Group> groupSet = groupController.getAllGroups();
+        
+        for (Group group : groupSet) {
+            JCheckBox checkBox = new JCheckBox(group.getName());
+            groupPanel.add(checkBox);
+        }
+        groupPanel.revalidate();
+        groupPanel.repaint();
+    }
+	
+	public void saveContact() {
+		String firstName = firstNameField.getText().trim();
+		String lastName = lastNameField.getText().trim();
+		String cityName = cityNameField.getText().trim();
+		String pn= phoneNumberField.getText().trim();
+		
+		if(firstName.isEmpty() || lastName.isEmpty() || cityName.isEmpty() || pn.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Un contact doit avoir un nom, un prénom et un numéro de téléphone", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		Contact newContact = new Contact(firstName, lastName, cityName);
+		newContact.addPhoneNumber(pn);
+        contactController.addContact(newContact);
+        
+        for (Component c : groupPanel.getComponents()) {
+            if (c instanceof JCheckBox checkBox && checkBox.isSelected()) {
+                String groupName = checkBox.getText();
+                Group group = groupController.findGroupByName(groupName);
+                if (group != null) {
+                    newContact.addGroup(group);
+                }
+                
+            }
+        }
+        
+       
+        
+        dispose(); 
+	
+	}
+	/**
+	 * Create the frame.
+	 */
+	public NewContactWindow(ContactController contactController, GroupController groupController, ContactsWindow contactsWindow) {
+	    this.contactController = contactController;
+	    this.groupController = groupController;
+	    this.contactsWindow = contactsWindow;
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 400);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setBounds(184, 11, 201, 24);
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblNewContact = new JLabel("New Contact");
+		lblNewContact.setForeground(Color.RED);
+		lblNewContact.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		lblNewContact.setBounds(10, 39, 127, 24);
+		contentPane.add(lblNewContact);
+		
+		JLabel lblNewLabel = new JLabel("First Name");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setBounds(184, 59, 67, 14);
+		contentPane.add(lblNewLabel);
+		
+		firstNameField = new JTextField();
+		firstNameField.setBounds(250, 56, 174, 20);
+		contentPane.add(firstNameField);
+		firstNameField.setColumns(10);
+		
+		JLabel lblLastName = new JLabel("Last Name");
+		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblLastName.setBounds(184, 84, 67, 14);
+		contentPane.add(lblLastName);
+		
+		lastNameField = new JTextField();
+		lastNameField.setColumns(10);
+		lastNameField.setBounds(250, 81, 174, 20);
+		contentPane.add(lastNameField);
+		
+		cityNameField = new JTextField();
+		cityNameField.setColumns(10);
+		cityNameField.setBounds(215, 105, 209, 20);
+		contentPane.add(cityNameField);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("City");
+		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel_2_1.setBounds(184, 109, 67, 14);
+		contentPane.add(lblNewLabel_2_1);
+		
+		JLabel lblPhoneNumbers = new JLabel("Phone number");
+		lblPhoneNumbers.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblPhoneNumbers.setBounds(184, 136, 97, 14);
+		contentPane.add(lblPhoneNumbers);
+		
+		JLabel lblAdd = new JLabel("Add the contact to Group(s)");
+		lblAdd.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblAdd.setBounds(215, 183, 166, 14);
+		contentPane.add(lblAdd);
+		
+		JButton btnNewButton = new JButton("Save");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveContact();
+		}});
+		btnNewButton.setBounds(184, 327, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 int confirm = JOptionPane.showConfirmDialog(
+					        NewContactWindow.this,
+					        "Are you sure you want to cancel and return to the Contacts window?",
+					        "Confirm Cancel",
+					        JOptionPane.YES_NO_OPTION
+					    );
+
+					    if (confirm == JOptionPane.YES_OPTION) {
+					        dispose();
+					        if (contactsWindow == null || !contactsWindow.isVisible()) {
+					            new ContactsWindow(contactController, groupController).setVisible(true);
+					        }
+					    }
+			}
+		});
+		btnCancel.setBounds(309, 327, 89, 23);
+		contentPane.add(btnCancel);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(225, 208, 135, 76);
+		contentPane.add(scrollPane);
+		
+		groupPanel = new JPanel();
+		scrollPane.setViewportView(groupPanel);
+		groupPanel.setLayout(new BoxLayout(groupPanel, BoxLayout.Y_AXIS));
+		
+		populateGroupCheckboxes();
+		
+		phoneNumberField = new JTextField();
+		phoneNumberField.setColumns(10);
+		phoneNumberField.setBounds(270, 133, 154, 20);
+		contentPane.add(phoneNumberField);
+	}
+}

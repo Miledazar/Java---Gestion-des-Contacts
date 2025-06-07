@@ -1,0 +1,99 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+
+public class UpdateGroupWindow extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTable table;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UpdateGroupWindow frame = new UpdateGroupWindow();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public UpdateGroupWindow() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 368);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblGroups = new JLabel("Update Group");
+		lblGroups.setBounds(10, 39, 123, 22);
+		lblGroups.setForeground(Color.RED);
+		lblGroups.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		contentPane.add(lblGroups);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel_1.setBounds(147, 11, 197, 26);
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblGroupName = new JLabel("Group name");
+		lblGroupName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblGroupName.setBounds(178, 60, 77, 14);
+		contentPane.add(lblGroupName);
+		
+		JLabel lblDescription = new JLabel("Description");
+		lblDescription.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblDescription.setBounds(178, 85, 67, 14);
+		contentPane.add(lblDescription);
+		
+		textField = new JTextField();
+		textField.setColumns(10);
+		textField.setBounds(250, 57, 174, 20);
+		contentPane.add(textField);
+		
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(250, 82, 174, 20);
+		contentPane.add(textField_1);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(178, 129, 246, 170);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		
+		JButton btnNewButton = new JButton("Save Group");
+		btnNewButton.setBounds(199, 306, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setBounds(309, 306, 89, 23);
+		contentPane.add(btnCancel);
+	}
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="hasShownOverlayPopupBefore" value="true"/>
+	<item key="replaceBarOpen" value="true"/>
+	<list key="searchhistory">
+		<item value="textField"/>
+		<item value="Y"/>
+		<item value="y"/>
+		<item value="firstName_2"/>
+		<item value="firstName_1"/>
+		<item value="controller"/>
+		<item value="textField_3"/>
+		<item value="textField_2"/>
+		<item value="textField_1"/>
+		<item value="this.name"/>
+		<item value=".toLowerCase"/>
+	</list>
+	<list key="replacehistory">
+		<item value="name"/>
+		<item value="city"/>
+		<item value="lastName"/>
+		<item value="firstName"/>
+		<item value="groupController"/>
+		<item value="phoneNumberField"/>
+		<item value="cityNameField"/>
+		<item value="lastNameField"/>
+	</list>
+</section>
