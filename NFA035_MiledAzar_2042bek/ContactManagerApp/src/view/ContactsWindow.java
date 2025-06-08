@@ -27,7 +27,7 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.TreeSet;
+import java.util.Set;
 import java.awt.event.ActionEvent;
 
 public class ContactsWindow extends JFrame implements MyObserver {
@@ -43,8 +43,9 @@ public class ContactsWindow extends JFrame implements MyObserver {
     @Override
 	public void update() {
 	    listModel.clear();
-	    Collection<Contact> contacts = contactController.getAllContacts();
-	    for (Contact c : contacts) {
+	    ArrayList<Contact> sortedContacts = contactController.getContactsSortedByFirstName(); 
+	    
+	    for (Contact c : sortedContacts) {
 	        listModel.addElement(c);
 	    }
 	}
@@ -70,28 +71,7 @@ public class ContactsWindow extends JFrame implements MyObserver {
 
 
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ContactController contactController = new ContactController();
-					GroupController groupController = new GroupController();
-					
-					ContactsWindow frame = new ContactsWindow(contactController, groupController);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the frame.
-	 */
 	public ContactsWindow(ContactController controller, GroupController groupController) {
 		
 
@@ -125,7 +105,7 @@ public class ContactsWindow extends JFrame implements MyObserver {
 		JButton btnNewButton = new JButton("Sort by First name");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TreeSet<Contact> sorted = controller.getContactsSortedByFirstName();
+				ArrayList<Contact> sorted = controller.getContactsSortedByFirstName();
 				updateContactList(sorted);
 				
 			}

@@ -2,23 +2,25 @@ package controller;
 
 	import model.Contact;
 
-
+	import model.Group;
+	
 	import java.io.Serializable;
 	import java.util.ArrayList;
-//	import java.util.HashSet;
-//	import java.util.Set;
-	import java.util.TreeSet;
+	import java.util.HashSet;
+	import java.util.Set;
+
+
 	import data.DataManager;
 
 	public class ContactController extends MyObservable implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 		
-		private TreeSet<Contact> contacts;
+		private Set<Contact> contacts;
 		
 		public ContactController() {
-			 TreeSet<Contact> loaded = DataManager.loadContacts();
-			    contacts = (loaded != null) ? loaded : new TreeSet<>();
+			 Set<Contact> loaded = DataManager.loadContacts();
+			    contacts = (loaded != null) ? loaded : new HashSet<>();
 		}
 		
 		// Add Contact
@@ -39,8 +41,8 @@ package controller;
 		
 		// Get All Contacts
 		
-		public TreeSet<Contact> getAllContacts(){
-			return new TreeSet<>(contacts);
+		public Set<Contact> getAllContacts(){
+			return new HashSet<>(contacts);
 		}
 		
 		 // Find Contact By Name
@@ -56,14 +58,37 @@ package controller;
 		
 		// Update Contact
 		
-		public void updateContact(Contact originalContact, Contact updatedContact) {
+		public void updateContact(Contact originalContact, Contact updatedContact, Set<Group> groups) {
 		   
-		    contacts.remove(originalContact);
+			Set<Group> groupsCopy = new HashSet<>(originalContact.getGroup());
 
-		    contacts.add(updatedContact);
+			for (Group oldGroup : groupsCopy) {
+			    if (!updatedContact.getGroup().contains(oldGroup)) {
+			        oldGroup.removeContact(originalContact); 
+			    }
+			}
 
-		    DataManager.saveContacts(contacts);
-		    notifyObservers();
+	
+			for (Group newGroup : updatedContact.getGroup()) {
+			    if (!originalContact.getGroup().contains(newGroup)) {
+			        newGroup.addContact(originalContact); 
+			    }
+			}
+
+			
+			originalContact.setFirstName(updatedContact.getFirstName());
+			originalContact.setLastName(updatedContact.getLastName());
+			originalContact.setCity(updatedContact.getCity());
+			originalContact.setPhoneNumbers(updatedContact.getPhoneNumbers());
+
+		
+			originalContact.setGroups(updatedContact.getGroup());
+
+			DataManager.saveContacts(contacts);
+			DataManager.saveGroups(groups);
+			notifyObservers();
+
+
 		}
 
 		// Search by first name prefix
@@ -83,16 +108,13 @@ package controller;
 		}
 		
 		// Sort by first name 
-//		public ArrayList<Contact> getContactsSortedByFirstName() {
-//			ArrayList<Contact> sorted = new ArrayList<>(contacts);
-//			sorted.sort((c1, c2) -> c1.getFirstName().compareToIgnoreCase(c2.getFirstName()));
-//		    return sorted;
-//		}
-		
-		public TreeSet<Contact> getContactsSortedByFirstName() {
-			TreeSet<Contact> sorted = new TreeSet<>(contacts);
+		public ArrayList<Contact> getContactsSortedByFirstName() {
+			ArrayList<Contact> sorted = new ArrayList<>(contacts);
+			sorted.sort((c1, c2) -> c1.getFirstName().compareToIgnoreCase(c2.getFirstName()));
 		    return sorted;
 		}
+		
+		
 		
 		// Sort by last name
 		public ArrayList<Contact> getContactsSortedByLastName() {

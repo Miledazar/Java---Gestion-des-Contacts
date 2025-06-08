@@ -1,11 +1,12 @@
 package model;
 
 import java.io.Serializable;
+
 import java.util.Set;
 import java.util.HashSet;
-import java.lang.Comparable;
 
-public class Contact implements Serializable, Comparable<Contact>{
+
+public class Contact implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -76,29 +77,53 @@ public class Contact implements Serializable, Comparable<Contact>{
 	}
 	
 	public void addGroup(Group group) {
-		groups.add(group);
+		 if (groups.add(group)) {
+		        if (!group.getContacts().contains(this)) {
+		            group.addContact(this); 
+		        }
+		    }
 	}
-	
+
 	public void removeGroup(Group group) {
-		groups.remove(group);
+		 if (groups.remove(group)) {
+		        if (group.getContacts().contains(this)) {
+		            group.removeContact(this); 
+		        }
+		    }
 	}
+
 	
 	public void removePhoneNumber(String phoneNumber) {
 	    phoneNumbers.remove(phoneNumber);
 	}
 	
-		
-		@Override
-	public int compareTo(Contact other) {
-		  
-	    int first = this.firstName.compareToIgnoreCase(other.firstName);
-	    if (first != 0) return first;
-		    
-	    int last = this.lastName.compareToIgnoreCase(other.lastName);
-	    if (last != 0)  return last;
+	@Override
+	public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (o == null || !(o instanceof Contact)) return false;
+
+	    Contact contact = (Contact) o;
 	    
-	    return 0;
-		    
+	    if (this.firstName == null) {
+            if (contact.firstName != null) return false;
+        } else if (!this.firstName.equalsIgnoreCase(contact.firstName)) {
+            return false;
+        }
+
+        if (this.lastName == null) {
+            if (contact.lastName != null) return false;
+        } else if (!this.lastName.equalsIgnoreCase(contact.lastName)) {
+            return false;
+        }
+	    
+	    return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (firstName == null) ? 0 : firstName.toLowerCase().hashCode();
+	    result = 31 * result + ((lastName == null) ? 0 : lastName.toLowerCase().hashCode());
+	    return result;
 	}
 
 	    

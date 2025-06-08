@@ -1,0 +1,231 @@
+package view;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import model.Contact;
+import model.Group;
+
+import controller.ContactController;
+import controller.GroupController;
+import controller.MyObserver;
+
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.awt.Color;
+import java.awt.Component;
+
+import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JScrollPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class UpdateGroupWindow extends JFrame implements MyObserver {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField name;
+	private JTextField description;
+	private ContactController contactController;
+	private GroupController groupController;
+	private GroupsWindow groupsWindow;
+	private Group group;
+	private JPanel contactList;
+	private List<JCheckBox> checkBoxes;
+
+
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ContactController contactController = new ContactController(); 
+//					GroupController groupController = new GroupController();
+//					GroupsWindow groupsWindow = new GroupsWindow(groupController, contactController);
+//					Group group = new Group("Schlampes", "Niggers");
+//					
+//					UpdateGroupWindow frame = new UpdateGroupWindow(group, groupController, contactController, groupsWindow);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
+//
+//	/**
+//	 * Create the frame.
+//	 */
+	
+	@Override
+	public void update() {
+		contactList.removeAll();
+	    checkBoxes.clear();
+
+	    TreeSet<Contact> allContacts = contactController.getAllContacts();
+	    Set<Contact> groupContacts = new TreeSet<>(group.getContacts());
+
+	    for (Contact c : allContacts) {
+	        JCheckBox cb = new JCheckBox(c.getFirstName() + " " + c.getLastName());
+	        cb.setName(c.getFirstName());
+	        cb.setSelected(groupContacts.contains(c));
+	        contactList.add(cb);
+	        checkBoxes.add(cb);
+	    }
+
+	    contactList.revalidate();
+	    contactList.repaint();
+	}
+
+	
+	public UpdateGroupWindow(Group group, GroupController groupController,ContactController contactController, GroupsWindow groupsWindow) {
+		this.group = group;
+		this.groupController = groupController;
+		this.contactController = contactController;
+		this.groupsWindow = groupsWindow;
+		
+
+		if (!groupController.hasObserver(this)) {
+			groupController.addObserver(this);
+		}
+		
+		if (!contactController.hasObserver(this)) {
+			contactController.addObserver(this);
+		}
+//		
+		
+		
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 450, 375);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblGroups = new JLabel("Update Group");
+		lblGroups.setBounds(10, 39, 123, 22);
+		lblGroups.setForeground(Color.RED);
+		lblGroups.setFont(new Font("Times New Roman", Font.BOLD, 19));
+		contentPane.add(lblGroups);
+		
+		JLabel lblNewLabel_1 = new JLabel("Gestion des contacts");
+		lblNewLabel_1.setForeground(Color.BLUE);
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel_1.setBounds(147, 11, 197, 26);
+		contentPane.add(lblNewLabel_1);
+		
+		JLabel lblGroupName = new JLabel("Group name");
+		lblGroupName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblGroupName.setBounds(178, 60, 77, 14);
+		contentPane.add(lblGroupName);
+		
+		JLabel lblDescription = new JLabel("Description");
+		lblDescription.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblDescription.setBounds(178, 85, 67, 14);
+		contentPane.add(lblDescription);
+		
+		name = new JTextField(group.getName());
+		name .setColumns(10);
+		name .setBounds(250, 57, 174, 20);
+		contentPane.add(name );
+		
+		description = new JTextField(group.getDescription());
+		description.setColumns(10);
+		description.setBounds(250, 82, 174, 20);
+		contentPane.add(description);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(178, 129, 246, 170);
+		contentPane.add(scrollPane);
+		
+		contactList = new JPanel();
+		scrollPane.setViewportView(contactList);
+		contactList.setLayout(new BoxLayout(contactList, BoxLayout.Y_AXIS));
+		
+//		TreeSet<Contact> allContacts = contactController.getAllContacts();
+//	    Set<Contact> groupContacts = new TreeSet<>(group.getContacts());
+
+	    checkBoxes = new ArrayList<>();
+	    
+	    update();
+//	    for (Contact c : allContacts) {
+//	        JCheckBox cb = new JCheckBox(c.getFirstName() + " " + c.getLastName());
+//	        cb.setName(c.getFirstName());
+//	        cb.setSelected(groupContacts.contains(c));
+//	        contactList.add(cb);
+//	        contactList.add(cb);
+//	        checkBoxes.add(cb);
+//	    }
+		JButton btnNewButton = new JButton("Save ");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				 String gName = name.getText().trim();
+				 String gDescription = description.getText().trim();
+			
+				if(gName.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Un group doit avoir un nom", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				
+				TreeSet<Contact> selectedContacts = new TreeSet<>();
+	            for (JCheckBox cb : checkBoxes) {
+	                if (cb.isSelected()) {
+	                	Contact c = contactController.findContactByName(cb.getName());
+	                    selectedContacts.add(c);
+	                }
+	            }
+	            
+	            groupController.updateGroup(group, gName, gDescription, selectedContacts);
+	            
+
+			    if (groupsWindow == null || !groupsWindow.isVisible()) {
+			        new GroupsWindow(groupController, contactController).setVisible(true);
+			    }
+			    
+			    dispose();
+			}
+		});
+		btnNewButton.setBounds(199, 306, 89, 23);
+		contentPane.add(btnNewButton);
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int confirm = JOptionPane.showConfirmDialog(
+				        UpdateGroupWindow.this,
+				        "Are you sure you want to cancel and return to the Groups window?",
+				        "Confirm Cancel",
+				        JOptionPane.YES_NO_OPTION
+				    );
+
+				    if (confirm == JOptionPane.YES_OPTION) {
+				        dispose();
+				        if (groupsWindow == null || !groupsWindow.isVisible()) {
+				        	 new GroupsWindow(groupController, contactController).setVisible(true);
+				        }
+				    }
+			}
+			
+		});
+		btnCancel.setBounds(309, 306, 89, 23);
+		contentPane.add(btnCancel);
+	}
+}

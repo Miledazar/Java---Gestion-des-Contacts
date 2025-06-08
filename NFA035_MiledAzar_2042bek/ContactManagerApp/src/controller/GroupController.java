@@ -1,4 +1,5 @@
 package controller;
+import model.Contact;
 
 import model.Group;
 
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
 
 import data.DataManager;
 
@@ -34,6 +36,19 @@ public class GroupController extends MyObservable implements Serializable {
         DataManager.saveGroups(groups);
         notifyObservers();
     }
+    	
+    //Update Group
+    
+    public void updateGroup(Group group, String name, String desc, Set<Contact> contactsList) {
+		   
+	    if(!group.getName().equals(name)) group.setName(name);
+	    if(!group.getDescription().equals(desc)) group.setDescription(desc);
+	    group.setContacts(contactsList);
+
+	    DataManager.saveGroups(groups);
+	    notifyObservers();
+	}
+    
 
     // Get all Groups
     public Set<Group> getAllGroups() {

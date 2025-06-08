@@ -10,7 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
+
 
 
 public class DataManager {
@@ -20,7 +20,7 @@ public class DataManager {
 	
 	// Save Contacts
 	
-	public static void saveContacts(TreeSet<Contact> contacts) {
+	public static void saveContacts(Set<Contact> contacts) {
 		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CONTACTS_FILE))){
 			oos.writeObject(contacts);
 		} catch (IOException e) {
@@ -42,12 +42,12 @@ public class DataManager {
 	// Load Contacts 
 	
 	@SuppressWarnings("unchecked")
-	public static TreeSet<Contact> loadContacts(){
+	public static Set<Contact> loadContacts(){
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CONTACTS_FILE))){
-			return (TreeSet<Contact>) ois.readObject();	 
+			return (HashSet<Contact>) ois.readObject();	 
 		}catch (IOException | ClassNotFoundException e) {
             System.out.println("No existing contact file found or failed to load: " + e.getMessage());
-            return new TreeSet<>();
+            return new HashSet<>();
         }
 	  }
 	

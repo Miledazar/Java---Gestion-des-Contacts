@@ -1,7 +1,9 @@
 package model;
 
 import java.io.Serializable;
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class Group implements Serializable {
 
@@ -9,16 +11,16 @@ public class Group implements Serializable {
 	
 	private String name;
 	private String description;
-	private TreeSet<Contact> contacts;
+	private Set<Contact> contacts;
 
 	    // Constructor
 	    public Group(String name, String description) {
-	    	if(this.name == null) {
+	    	if(name == null) {
 	    		throw new IllegalArgumentException("Group name cannot be null");
 	    	}
 	        this.name = name;
 	        this.description = description;
-	        this.contacts = new TreeSet<>();
+	        this.contacts = new HashSet<>();
 	    }
 
 	    // Getters
@@ -30,7 +32,7 @@ public class Group implements Serializable {
 	        return description;
 	    }
 	    
-	    public TreeSet<Contact> getContacts() {
+	    public Set<Contact> getContacts() {
 	        return contacts;
 	    }
 	    
@@ -43,19 +45,36 @@ public class Group implements Serializable {
 	        this.description = description;
 	    }
 
-	    public void setContacts(TreeSet<Contact> contacts) {
-	        this.contacts = contacts;
+	    public void setContacts(Set<Contact> newContacts) {
+	    	 for (Contact c : new HashSet<>(contacts)) {
+	    	        if (!newContacts.contains(c)) {
+	    	            removeContact(c); 
+	    	        }
+	    	    }
+
+	    	    
+	    	    for (Contact c : newContacts) {
+	    	        if (!contacts.contains(c)) {
+	    	            addContact(c); 
+	    	        }
+	    	    }
 	    }
 
 	    // Helpers
 	    public void addContact(Contact contact) {
-	        contacts.add(contact);
-	        contact.addGroup(this);
+	    	 if (contacts.add(contact)) {
+	    	        if (!contact.getGroup().contains(this)) {
+	    	            contact.addGroup(this); 
+	    	        }
+	    	    }
 	    }
 
 	    public void removeContact(Contact contact) {
-	        contacts.remove(contact);
-	        contact.removeGroup(this);
+	    	if (contacts.remove(contact)) {
+	            if (contact.getGroup().contains(this)) {
+	                contact.removeGroup(this); 
+	            }
+	        }
 	    }
 	    
 	    @Override

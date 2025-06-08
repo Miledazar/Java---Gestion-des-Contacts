@@ -1,0 +1,131 @@
+package model;
+
+import java.io.Serializable;
+import java.util.Set;
+import java.util.HashSet;
+import java.lang.Comparable;
+
+public class Contact implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
+	private String firstName;
+	private String lastName;
+	private String city;
+	
+	private Set<String> phoneNumbers ;
+	private Set<Group> groups ;
+
+	
+	// Constructor
+	public Contact(String fn, String ln, String city) {
+		
+		firstName = fn;
+		lastName = ln;
+		this.city = city;
+		this.phoneNumbers = new HashSet<>();
+		this.groups = new HashSet<>();
+	}
+	
+	// Getters
+	public String getFirstName() {
+		return firstName;
+	}
+	
+	public String getLastName() {
+		return lastName;
+	}
+	
+	public String getCity() {
+		return city;
+	}
+	
+	public Set<String> getPhoneNumbers(){
+		return phoneNumbers;
+	}
+	
+	public Set<Group> getGroup(){
+		return groups;
+	}
+	
+	// Setters
+	
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	
+	public void setCity(String city) {
+		this.city = city;
+	}
+	
+	public void setPhoneNumbers(Set<String> phoneNumbers) {
+		this.phoneNumbers = phoneNumbers;
+	}
+	
+	 public void setGroups(Set<Group> groups) {
+	        this.groups = groups;
+	}
+	
+	// Helpers
+	public void addPhoneNumber(String phoneNumber) {
+	     phoneNumbers.add(phoneNumber);
+	}
+	
+	public void addGroup(Group group) {
+		 if (groups.add(group)) {
+		        if (!group.getContacts().contains(this)) {
+		            group.addContact(this); 
+		        }
+		    }
+	}
+
+	public void removeGroup(Group group) {
+		 if (groups.remove(group)) {
+		        if (group.getContacts().contains(this)) {
+		            group.removeContact(this); 
+		        }
+		    }
+	}
+
+	
+	public void removePhoneNumber(String phoneNumber) {
+	    phoneNumbers.remove(phoneNumber);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (o == null || !(o instanceof Contact)) return false;
+
+	    Contact contact = (Contact) o;
+
+	    // For equality, you can decide the identity, typically by first and last name:
+	    return firstName.equalsIgnoreCase(contact.firstName) &&
+	           lastName.equalsIgnoreCase(contact.lastName);
+	}
+
+	@Override
+	public int hashCode() {
+	    // Use case-insensitive hash code
+	    int result = firstName.toLowerCase().hashCode();
+	    result = 31 * result + lastName.toLowerCase().hashCode();
+	    return result;
+	}
+
+	    
+	
+
+	
+
+	@Override
+	public String toString() {
+	     
+	     return firstName + " "+ lastName + " - " + city;
+	}
+
+	
+}

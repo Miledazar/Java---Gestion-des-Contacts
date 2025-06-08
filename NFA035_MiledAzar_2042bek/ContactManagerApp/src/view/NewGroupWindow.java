@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
-import java.util.TreeSet;
+import java.util.Set;
 import java.awt.Color;
 import java.awt.Component;
 
@@ -38,29 +38,7 @@ public class NewGroupWindow extends JFrame {
 	private GroupController groupController;
 	private GroupsWindow groupsWindow;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ContactController contactController = new ContactController(); 
-					GroupController groupController = new GroupController();
-					GroupsWindow groupsWindow = new GroupsWindow(groupController, contactController);
-					
-					NewGroupWindow frame = new NewGroupWindow(groupController, contactController, groupsWindow);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the frame.
-	 */
 	public NewGroupWindow( GroupController groupController,ContactController contactController, GroupsWindow groupsWindow) {
 		this.groupController = groupController;
 		this.contactController = contactController;
@@ -114,7 +92,7 @@ public class NewGroupWindow extends JFrame {
 		scrollPane.setViewportView(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
-		TreeSet<Contact> contacts = contactController.getAllContacts();
+		Set<Contact> contacts = contactController.getAllContacts();
 		
 		 for (Contact c : contacts) {
 	            JCheckBox cb = new JCheckBox(c.getFirstName() + " " + c.getLastName());
@@ -128,8 +106,8 @@ public class NewGroupWindow extends JFrame {
 				String gName = name.getText().trim();
 				String gDescription = description.getText().trim();
 				
-				
-				if(gName.isEmpty()) {
+
+				if(gName.length()== 0) {
 					JOptionPane.showMessageDialog(null, "Un group doit avoir un nom", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}

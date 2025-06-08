@@ -23,7 +23,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import controller.ContactController;
 import controller.GroupController;
@@ -43,29 +42,7 @@ public class UpdateContactWindow extends JFrame {
 	private GroupController groupController;
 	private ContactsWindow contactsWindow;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Contact contact = new Contact("John", "Doe", "Paris");
-					ContactController contactController = new ContactController();
-					GroupController groupController = new GroupController();
-					ContactsWindow contactsWindow = new ContactsWindow(contactController, groupController);
-					UpdateContactWindow frame = new UpdateContactWindow(contact, contactController, groupController, contactsWindow);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the frame.
-	 */
 	public UpdateContactWindow(Contact contact, ContactController contactController, GroupController groupController, ContactsWindow contactsWindow) {
 		this.contact = contact;
 		this.contactController = contactController;
@@ -216,9 +193,9 @@ public class UpdateContactWindow extends JFrame {
 			        }
 			    }
 
-			        contactController.updateContact(contact, updatedContact);
-
-
+			        contactController.updateContact(contact, updatedContact, groupController.getAllGroups());
+			        groupController.notifyObservers();
+			   
 			    if (contactsWindow == null || !contactsWindow.isVisible()) {
 			        new ContactsWindow(contactController, groupController).setVisible(true);
 			    }

@@ -45,25 +45,7 @@ public class NewContactWindow extends JFrame {
 	
 
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ContactController contactController = new ContactController(); 
-					GroupController groupController = new GroupController();
-					ContactsWindow contactsWindow = new ContactsWindow(contactController, groupController);
-					
-					NewContactWindow frame = new NewContactWindow(contactController, groupController, contactsWindow);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+
 
 	
 	private void populateGroupCheckboxes() {
@@ -109,9 +91,7 @@ public class NewContactWindow extends JFrame {
         dispose(); 
 	
 	}
-	/**
-	 * Create the frame.
-	 */
+	
 	public NewContactWindow(ContactController contactController, GroupController groupController, ContactsWindow contactsWindow) {
 	    this.contactController = contactController;
 	    this.groupController = groupController;

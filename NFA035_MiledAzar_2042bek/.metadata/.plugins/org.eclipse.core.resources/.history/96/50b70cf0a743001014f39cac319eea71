@@ -1,0 +1,108 @@
+package model;
+
+import java.io.Serializable;
+import java.util.TreeSet;
+
+public class Group implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	private String name;
+	private String description;
+	private TreeSet<Contact> contacts;
+
+	    // Constructor
+	    public Group(String name, String description) {
+	    	if(name == null) {
+	    		throw new IllegalArgumentException("Group name cannot be null");
+	    	}
+	        this.name = name;
+	        this.description = description;
+	        this.contacts = new TreeSet<>();
+	    }
+
+	    // Getters
+	    public String getName() {
+	        return name;
+	    }
+	    
+	    public String getDescription() {
+	        return description;
+	    }
+	    
+	    public TreeSet<Contact> getContacts() {
+	        return contacts;
+	    }
+	    
+	    // Setters
+	    public void setName(String name) {
+	        this.name = name;
+	    }
+
+	    public void setDescription(String description) {
+	        this.description = description;
+	    }
+
+	    public void setContacts(TreeSet<Contact> newContacts) {
+	    	for (Contact c : new TreeSet<>(contacts)) {
+	            if (!newContacts.contains(c)) {
+	                c.removeGroup(this);
+	                contacts.remove(c);
+	            }
+	        }
+	        
+	        
+	        for (Contact c : newContacts) {
+	            if (!contacts.contains(c)) {
+	                contacts.add(c);
+	                c.addGroup(this);
+	            }
+	        }
+	    }
+
+	    // Helpers
+	    public void addContact(Contact contact) {
+	        contacts.add(contact);
+	        contact.addGroup(this);
+	    }
+
+	    public void removeContact(Contact contact) {
+	        contacts.remove(contact);
+	        contact.removeGroup(this);
+	    }
+	    
+	    @Override
+	    public boolean equals(Object o) {
+	        if (this == o) return true;
+	        if (!(o instanceof Group)) return false;
+	        Group group = (Group) o;
+
+	        if (this.name == null) {
+	            if (group.name != null) return false;
+	        } else if (!this.name.equalsIgnoreCase(group.name)) {
+	            return false;
+	        }
+
+	        if (this.description == null) {
+	            if (group.description != null) return false;
+	        } else if (!this.description.equalsIgnoreCase(group.description)) {
+	            return false;
+	        }
+
+	        return true;
+	    }
+
+
+		@Override
+		public int hashCode() {
+		    int result = (name == null) ? 0 : name.toLowerCase().hashCode();
+		    result = 31 * result + ((description == null) ? 0 : description.toLowerCase().hashCode());
+		    return result;
+		}
+	    
+	   @Override
+		public String toString() {
+		    return name;
+		}
+
+}

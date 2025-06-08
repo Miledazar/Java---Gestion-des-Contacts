@@ -1,0 +1,158 @@
+package controller;
+
+	import model.Contact;
+import model.Group;
+
+import java.io.Serializable;
+	import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+
+	import data.DataManager;
+
+	public class ContactController extends MyObservable implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+		
+		private Set<Contact> contacts;
+		
+		public ContactController() {
+			 Set<Contact> loaded = DataManager.loadContacts();
+			    contacts = (loaded != null) ? loaded : new HashSet<>();
+		}
+		
+		// Add Contact
+		
+		public void addContact(Contact contact) {
+			contacts.add(contact);
+			DataManager.saveContacts(contacts);
+			notifyObservers();
+		}
+		
+		// Remove Contact
+		
+		public void removeContact(Contact contact) {
+			contacts.remove(contact);
+			DataManager.saveContacts(contacts);
+			notifyObservers();
+		}
+		
+		// Get All Contacts
+		
+		public Set<Contact> getAllContacts(){
+			return new HashSet<>(contacts);
+		}
+		
+		 // Find Contact By Name
+	    
+	    public Contact findContactByName(String name) {
+	        for (Contact contact : contacts) {
+	            if (contact.getFirstName().equalsIgnoreCase(name)) {
+	                return contact;
+	            }
+	        }
+	        return null;
+	    }
+		
+		// Update Contact
+		
+		public void updateContact(Contact originalContact, Contact updatedContact) {
+		   
+//		    contacts.remove(originalContact);
+//		    originalContact.setFirstName(updatedContact.getFirstName());
+//		    originalContact.setLastName(updatedContact.getLastName());
+//		    originalContact.setCity(updatedContact.getCity());
+//		    originalContact.setPhoneNumbers(updatedContact.getPhoneNumbers());
+//		    
+//		 
+//		    for (Group group : new HashSet<>(originalContact.getGroup())) {
+//		        originalContact.removeGroup(group);
+//		    }
+//
+//		    
+//		    for (Group group : updatedContact.getGroup()) {
+//		        originalContact.addGroup(group);
+//		    }
+//
+//		    contacts.add(originalContact);
+			
+			
+			// Remove groups that are no longer in updatedContact
+			Set<Group> groupsCopy = new HashSet<>(originalContact.getGroup());
+
+			for (Group oldGroup : groupsCopy) {
+			    if (!updatedContact.getGroup().contains(oldGroup)) {
+			        oldGroup.removeContact(originalContact); // this removes group from contact also
+			    }
+			}
+
+			// Add contact to new groups and add group to contact if missing
+			for (Group newGroup : updatedContact.getGroup()) {
+			    if (!originalContact.getGroup().contains(newGroup)) {
+			        newGroup.addContact(originalContact); // this adds group to contact as well
+			    }
+			}
+
+			// Update other fields
+			originalContact.setFirstName(updatedContact.getFirstName());
+			originalContact.setLastName(updatedContact.getLastName());
+			originalContact.setCity(updatedContact.getCity());
+			originalContact.setPhoneNumbers(updatedContact.getPhoneNumbers());
+
+			// Update contact groups reference explicitly just in case
+			originalContact.setGroups(updatedContact.getGroup());
+
+			DataManager.saveContacts(contacts);
+			notifyObservers();
+
+
+		}
+
+		// Search by first name prefix
+		
+		public ArrayList<Contact> searchFirstNameByPrefix(String prefix){
+
+			ArrayList<Contact> byFirstName = new ArrayList<>();
+			
+			for(Contact contact : contacts) {
+				if(contact.getFirstName().toLowerCase().startsWith(prefix.toLowerCase())) {
+					byFirstName.add(contact);
+				}
+				
+			}
+			
+			return byFirstName;
+		}
+		
+		// Sort by first name 
+//		public ArrayList<Contact> getContactsSortedByFirstName() {
+//			ArrayList<Contact> sorted = new ArrayList<>(contacts);
+//			sorted.sort((c1, c2) -> c1.getFirstName().compareToIgnoreCase(c2.getFirstName()));
+//		    return sorted;
+//		}
+		
+		public Set<Contact> getContactsSortedByFirstName() {
+			Set<Contact> sorted = new HashSet<>(contacts);
+		    return sorted;
+		}
+		
+		// Sort by last name
+		public ArrayList<Contact> getContactsSortedByLastName() {
+		    ArrayList<Contact> sorted = new ArrayList<>(contacts);
+		    sorted.sort((c1, c2) -> c1.getLastName().compareToIgnoreCase(c2.getLastName()));
+		    return sorted;
+		}
+
+		// Sort by city
+		public ArrayList<Contact> getContactsSortedByCity() {
+		    ArrayList<Contact> sorted = new ArrayList<>(contacts);
+		    sorted.sort((c1, c2) -> c1.getCity().compareToIgnoreCase(c2.getCity()));
+		    return sorted;
+		}
+		
+	
+	}
+
+

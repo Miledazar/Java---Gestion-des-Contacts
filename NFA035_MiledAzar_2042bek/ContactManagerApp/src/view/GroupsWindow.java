@@ -39,9 +39,6 @@ public class GroupsWindow extends JFrame implements MyObserver {
 	private DefaultListModel<Group> listModel;
 	
 
-	/**
-	 * Launch the application.
-	 */
 	
 	@Override
 	public void update() {
@@ -50,29 +47,11 @@ public class GroupsWindow extends JFrame implements MyObserver {
 	    for (Group c : groups) {
 	        listModel.addElement(c);
 	    }
+	    
 	}
     
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GroupController groupController = new GroupController();
-					ContactController contactController = new ContactController();
-					GroupsWindow frame = new GroupsWindow(groupController, contactController);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	
-
-	/**
-	 * Create the frame.
-	 */
 	public GroupsWindow(GroupController groupController, ContactController contactController) {
 		this.groupController = groupController;
 		this.contactController = contactController;
@@ -145,7 +124,7 @@ public class GroupsWindow extends JFrame implements MyObserver {
 			public void actionPerformed(ActionEvent e) {
 				Group selectedGroup = groupList.getSelectedValue();
 			    if (selectedGroup == null) {
-			    	JOptionPane.showMessageDialog(GroupsWindow.this, "Please select a contact to delete.");
+			    	JOptionPane.showMessageDialog(GroupsWindow.this, "Please select a group to delete.");
 			    }else {
 			    
 				 int confirm = JOptionPane.showConfirmDialog(

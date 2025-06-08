@@ -1,0 +1,116 @@
+package controller;
+
+import model.Contact;
+import model.Group;
+
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
+import data.DataManager;
+
+public class GroupController extends MyObservable implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Set<Group> groups;
+
+    public GroupController() {
+        Set<Group> loaded = DataManager.loadGroups();
+        groups = (loaded != null ) ? loaded : new HashSet<>(); 
+    }
+
+    // Add Group
+    public void addGroup(Group group) {
+        groups.add(group);
+        DataManager.saveGroups(groups);
+        notifyObservers();
+    }
+
+    // Remove Group
+    public void removeGroup(Group group) {
+        groups.remove(group);
+        DataManager.saveGroups(groups);
+        notifyObservers();
+    }
+    	
+    //Update Group
+    
+    public void updateGroup(Group group, String name, String desc, Set<Contact> contactsList) {
+		   
+	    if(!group.getName().equals(name)) group.setName(name);
+	    if(!group.getDescription().equals(desc)) group.setDescription(desc);
+	    group.setContacts(contactsList);
+
+	    DataManager.saveGroups(groups);
+	    notifyObservers();
+	}
+    
+//    public void updateGroup(Group group, String name, String desc, TreeSet<Contact> newContacts) {
+//        if (!group.getName().equals(name)) group.setName(name);
+//        if (!group.getDescription().equals(desc)) group.setDescription(desc);
+//
+//        // Remove contacts no longer in the group using iterator
+//        Iterator<Contact> iterator = group.getContacts().iterator();
+//        while (iterator.hasNext()) {
+//            Contact oldContact = iterator.next();
+//            if (!newContacts.contains(oldContact)) {
+//                oldContact.removeGroup(group);
+//                iterator.remove();  // safe removal from the group's contact set
+//            }
+//        }
+//
+//        // Add new contacts to the group and update contact's group list
+//        for (Contact newContact : newContacts) {
+//            if (!group.getContacts().contains(newContact)) {
+//                group.addContact(newContact);
+//                newContact.addGroup(group);
+//            }
+//        }
+//
+//        DataManager.saveGroups(groups);
+//
+//        notifyObservers();
+//    }
+
+
+    // Get all Groups
+    public Set<Group> getAllGroups() {
+        return new HashSet<>(groups);
+    }
+
+    // Find Group By Name
+    
+    public Group findGroupByName(String name) {
+        for (Group group : groups) {
+            if (group.getName().equalsIgnoreCase(name)) {
+                return group;
+            }
+        }
+        return null;
+    }
+    
+
+    // Search groups by name prefix
+    public ArrayList<Group> searchGroupByNamePrefix(String prefix) {
+        ArrayList<Group> result = new ArrayList<>();
+        for (Group group : groups) {
+            if (group.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
+                result.add(group);
+            }
+        }
+        return result;
+    }
+
+    // Sort groups by name
+    public ArrayList<Group> getGroupsSortedByName() {
+        ArrayList<Group> sorted = new ArrayList<>(groups);
+        sorted.sort((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
+        return sorted;
+    }
+}
+
